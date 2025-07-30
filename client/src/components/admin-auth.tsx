@@ -1,86 +1,76 @@
+import { useState, useEffect } from "react";
+import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Shield, LogIn, LogOut } from "lucide-react";
+import { Shield, LogOut } from "lucide-react";
 import { useAuth } from "../hooks/use-auth";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 
 interface AdminAuthProps {
   children: React.ReactNode;
 }
 
 export function AdminAuth({ children }: AdminAuthProps) {
-  const { user, loading, isAdmin, signInWithGoogle, signOut } = useAuth();
+  const { user, loading } = useAuth();
+  const [, setLocation] = useLocation();
 
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-galactic-ember"></div>
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-galactic-ember mx-auto mb-4"></div>
+          <p className="text-cosmic-gray">Checking authentication...</p>
+        </div>
       </div>
     );
   }
 
-  if (!user || !isAdmin) {
+  if (!user) {
+    setLocation("/sign-in");
+    return null;
+  }
+
+  // Check if user is admin (you can customize this logic)
+  const isAdmin = user.email?.endsWith("@cypheruni.com");
+
+  if (!isAdmin) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
+      <div className="min-h-screen flex items-center justify-center">
         <Card className="w-full max-w-md">
           <CardHeader className="text-center">
-            <Shield className="mx-auto h-12 w-12 text-galactic-ember mb-4" />
-            <CardTitle className="text-2xl font-bold text-astro-navy">Admin Access Required</CardTitle>
-            <p className="text-cosmic-gray">
-              You need admin privileges to access this area
+            <Shield className="mx-auto h-12 w-12 text-red-500 mb-4" />
+            <CardTitle className="text-2xl font-bold text-astro-navy dark:text-lunar-white">
+              Access Denied
+            </CardTitle>
+            <p className="text-cosmic-gray dark:text-gray-400">
+              You don't have permission to access the admin panel.
             </p>
           </CardHeader>
           <CardContent>
             <Button 
-              onClick={signInWithGoogle}
+              onClick={() => setLocation("/")} 
               className="w-full bg-galactic-ember hover:bg-solar-orange"
             >
-              <LogIn className="mr-2 h-4 w-4" />
-              Sign in with Google
+              Return to Home
             </Button>
-            {user && !isAdmin && (
-              <p className="text-sm text-red-500 mt-4 text-center">
-                Your account doesn't have admin privileges
-              </p>
-            )}
           </CardContent>
         </Card>
       </div>
     );
   }
 
-  return (
-    <div>
-      {/* Admin Header */}
-      <div className="bg-galactic-ember text-white p-4">
-        <div className="max-w-7xl mx-auto flex justify-between items-center">
-          <div className="flex items-center gap-2">
-            <Shield className="h-5 w-5" />
-            <span className="font-semibold">Admin Panel</span>
-            <span className="text-sm opacity-80">Welcome, {user.displayName}</span>
-          </div>
-          <Button 
-            onClick={signOut}
-            variant="outline"
-            size="sm"
-            className="border-white text-white hover:bg-white hover:text-galactic-ember"
-          >
-            <LogOut className="mr-2 h-4 w-4" />
-            Sign Out
-          </Button>
-        </div>
-      </div>
-      {children}
-    </div>
-  );
+  return <>{children}</>;
 }
 
+
+
 export function AdminButton() {
-  const { user, isAdmin, signInWithGoogle, signOut } = useAuth();
+  const { user, signOut } = useAuth();
+  const [, setLocation] = useLocation();
 
   if (!user) {
     return (
       <Button 
-        onClick={signInWithGoogle}
+        onClick={() => setLocation("/sign-in")}
         variant="outline"
         size="sm"
         className="border-galactic-ember text-galactic-ember hover:bg-galactic-ember hover:text-white"
@@ -91,10 +81,12 @@ export function AdminButton() {
     );
   }
 
+  const isAdmin = user?.email?.endsWith("@cypheruni.com");
+  
   if (isAdmin) {
     return (
       <div className="flex items-center gap-2">
-        <span className="text-sm text-cosmic-gray">Admin: {user.displayName}</span>
+        <span className="text-sm text-cosmic-gray">Admin: {user.email}</span>
         <Button 
           onClick={signOut}
           variant="outline"

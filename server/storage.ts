@@ -153,6 +153,10 @@ export class MemStorage implements IStorage {
     return this.videos.get(id);
   }
 
+  async getAllVideos(): Promise<Video[]> {
+    return Array.from(this.videos.values());
+  }
+
   async createVideo(insertVideo: InsertVideo): Promise<Video> {
     const id = randomUUID();
     const video: Video = { 
@@ -170,6 +174,53 @@ export class MemStorage implements IStorage {
     }
     
     return video;
+  }
+
+  async updateSeries(id: string, updates: Partial<Series>): Promise<Series | null> {
+    const series = this.series.get(id);
+    if (!series) return null;
+    
+    const updatedSeries = { ...series, ...updates };
+    this.series.set(id, updatedSeries);
+    return updatedSeries;
+  }
+
+  async updateVideo(id: string, updates: Partial<Video>): Promise<Video | null> {
+    const video = this.videos.get(id);
+    if (!video) return null;
+    
+    const updatedVideo = { ...video, ...updates };
+    this.videos.set(id, updatedVideo);
+    return updatedVideo;
+  }
+
+  async deleteSeries(id: string): Promise<boolean> {
+    const exists = this.series.has(id);
+    if (exists) {
+      // Also delete all videos in this series
+      const videosToDelete = Array.from(this.videos.values())
+        .filter(video => video.seriesId === id);
+      videosToDelete.forEach(video => this.videos.delete(video.id));
+      
+      this.series.delete(id);
+    }
+    return exists;
+  }
+
+  async deleteVideo(id: string): Promise<boolean> {
+    const video = this.videos.get(id);
+    if (video) {
+      // Update video count for the series
+      const series = this.series.get(video.seriesId);
+      if (series && series.videoCount > 0) {
+        series.videoCount -= 1;
+        this.series.set(video.seriesId, series);
+      }
+      
+      this.videos.delete(id);
+      return true;
+    }
+    return false;
   }
 
   async getFeedbackByVideoId(videoId: string): Promise<Feedback[]> {
