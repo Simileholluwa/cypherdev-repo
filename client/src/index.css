@@ -1,0 +1,159 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: hsl(0, 0%, 100%);
+  --foreground: hsl(26, 58%, 14%);
+  --muted: hsl(30, 100%, 97%);
+  --muted-foreground: hsl(25, 15%, 45%);
+  --popover: hsl(30, 100%, 97%);
+  --popover-foreground: hsl(26, 58%, 14%);
+  --card: hsl(30, 100%, 97%);
+  --card-foreground: hsl(26, 58%, 14%);
+  --border: hsl(25, 20%, 85%);
+  --input: hsl(25, 20%, 85%);
+  --primary: hsl(17, 88%, 65%);
+  --primary-foreground: hsl(0, 0%, 98%);
+  --secondary: hsl(30, 100%, 97%);
+  --secondary-foreground: hsl(26, 83%, 9%);
+  --accent: hsl(30, 100%, 97%);
+  --accent-foreground: hsl(26, 83%, 9%);
+  --destructive: hsl(0, 84%, 60%);
+  --destructive-foreground: hsl(60, 9%, 98%);
+  --ring: hsl(26, 58%, 14%);
+  --radius: 0.5rem;
+
+  /* Custom warm theme variables */
+  --galactic-ember: hsl(17, 88%, 65%);
+  --solar-orange: hsl(15, 73%, 57%);
+  --lunar-white: hsl(70, 100%, 100%);
+  --cosmic-gray: hsl(25, 15%, 45%);
+  --glow: 0 0 20px hsl(17, 88%, 65%, 0.2);
+  --glow-lg: 0 0 30px hsl(17, 88%, 65%, 0.3);
+}
+
+.dark {
+  --background: hsl(26, 10%, 6%);
+  --foreground: hsl(0, 0%, 98%);
+  --muted: hsl(26, 15%, 12%);
+  --muted-foreground: hsl(26, 15%, 65%);
+  --popover: hsl(26, 10%, 6%);
+  --popover-foreground: hsl(0, 0%, 98%);
+  --card: hsl(26, 10%, 6%);
+  --card-foreground: hsl(0, 0%, 98%);
+  --border: hsl(26, 15%, 12%);
+  --input: hsl(26, 15%, 12%);
+  --primary: hsl(17, 88%, 65%);
+  --primary-foreground: hsl(0, 0%, 98%);
+  --secondary: hsl(26, 15%, 12%);
+  --secondary-foreground: hsl(0, 0%, 98%);
+  --accent: hsl(26, 15%, 12%);
+  --accent-foreground: hsl(0, 0%, 98%);
+  --destructive: hsl(0, 63%, 31%);
+  --destructive-foreground: hsl(0, 0%, 98%);
+  --ring: hsl(26, 58%, 14%);
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply font-sans antialiased bg-background text-foreground;
+  }
+}
+
+/* Stardust animation styles */
+.stardust-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.star {
+  position: absolute;
+  background: var(--galactic-ember);
+  border-radius: 50%;
+  opacity: 0.6;
+  animation: twinkle 3s ease-in-out infinite alternate;
+}
+
+@keyframes twinkle {
+  0% { 
+    opacity: 0.3; 
+    transform: scale(0.8); 
+  }
+  100% { 
+    opacity: 1; 
+    transform: scale(1.2); 
+  }
+}
+
+/* Custom utility classes */
+.glow-hover {
+  transition: all 0.3s ease;
+}
+
+.glow-hover:hover {
+  box-shadow: var(--glow-lg);
+  transform: translateY(-2px);
+}
+
+.page-transition {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeInUp 0.6s ease forwards;
+}
+
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.shadow-glow {
+  box-shadow: var(--glow);
+}
+
+.text-galactic-ember {
+  color: var(--galactic-ember);
+}
+
+.text-solar-orange {
+  color: var(--solar-orange);
+}
+
+.text-cosmic-gray {
+  color: var(--cosmic-gray);
+}
+
+.bg-galactic-ember {
+  background-color: var(--galactic-ember);
+}
+
+.bg-solar-orange {
+  background-color: var(--solar-orange);
+}
+
+.bg-lunar-white {
+  background-color: var(--lunar-white);
+}
+
+.border-galactic-ember {
+  border-color: var(--galactic-ember);
+}
+
+.hover\:bg-solar-orange:hover {
+  background-color: var(--solar-orange);
+}
+
+.focus\:ring-galactic-ember:focus {
+  --tw-ring-color: var(--galactic-ember);
+}
